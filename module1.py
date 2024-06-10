@@ -1,9 +1,4 @@
-
-from ctypes import sizeof
-from optparse import Values
-from socket import SO_VM_SOCKETS_BUFFER_MAX_SIZE
-from typing import ValuesView
-from xml.dom import ValidationErr
+from queue import PriorityQueue
 
 
 class Block:
@@ -77,3 +72,83 @@ stack.max()
 #    -Finish by giving space and run-time complexity
 #    -Discuss any pros and cons of the solution
 
+MAX_CHARS = 26
+MAX_WORD_SIZE = 30
+
+class TrieNode:
+    def __init__(self):
+        self.isEnd = False
+        self.frequency = 0
+        self.indexMinHeap = -1
+        self.child = [None] * MAX_CHARS
+
+class MinHeapNode:
+    def __init__(self,root,frequency,word):
+        self.root = root
+        self.frequency = frequency
+        self.word = word  
+
+class minHeap:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.count = 0
+        self.array = [None]* capacity
+
+def newTrieNode():
+    trieNode = TrieNode
+    return trieNode
+
+def createMinHeap(capacity):
+    minHeap = minHeap(capacity)
+    return minHeap
+
+def buildMinHeap(minHeap):
+    n = minHeap.count - 1
+    for i in range((n - 1) // 2,-1,-1):
+        minHeapify(minHeap, i)
+
+def insertInMinHeap(minHeap, root, word):
+    if root.indexMinHeap != -1:
+        minHeap.array[root.indexMinHeap].frequency += 1
+        minHeapify(minHeap, root.indexMinHeap)
+    elif minHeap.count < minHeap.capacity:
+        count = minHeap.count
+        minHeap.array[count] = MinHeapNode(root,root.frequency,word)
+        root.indexMinHeap = minHeap.count
+        minHeap.count += 1
+        buildMinHeap(minHeap) 
+    elif root.frequency > minHeap.array[0].frequency:
+        minHeap.array[0].root.indexMinHeap = -1
+        minHeap.array[0].root = root
+        minHeap.array[0].root.indexMinHeap = 0
+        minHeap.array[0].frequency = root.frequency
+        minHeap.array[0].word = word
+        minHeapify(minHeap, 0)
+    
+       
+def insertUtil(root, minHeap, word, dupWord):
+    if root is None:
+        root = newTrieNode
+    if word:
+        insertUtil(root.child[ord(word[0])-ord('a')], minHeap, word)
+    else: 
+        if root.isEnd:
+            root.frequency += 1
+        else:
+            root.isEnd = True
+            root.frequency = 1
+        insertInMinHeap(minHeap, root, dupWord)
+        
+def displayMinHeap(minHeap):
+    for i in range(minHeap.count):
+        print(f"{minHeap.array[i].word}: {minHeap.array[i].frequency}")
+
+def printKMostFreq(file_path, k):
+    minHeap = createMinHeap(k)
+    root = None
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            words = line.split()
+            for word in words:
+                insertTriedAndHeap(word, root, minHeap)
