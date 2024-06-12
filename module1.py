@@ -1,6 +1,6 @@
 from queue import PriorityQueue
 
-
+'''
 class Block:
     def __init__(self, value,localMax):
         self.value = value
@@ -53,7 +53,7 @@ stack.max()
 stack.pop()
 stack.max()
 
-
+'''
 
 #1) understand  
 #    -Ask clarifying questions and use examples to understand what the interviewer wants out of this problem
@@ -72,6 +72,8 @@ stack.max()
 #    -Finish by giving space and run-time complexity
 #    -Discuss any pros and cons of the solution
 
+
+'''
 MAX_CHARS = 26
 MAX_WORD_SIZE = 30
 
@@ -152,3 +154,28 @@ def printKMostFreq(file_path, k):
             words = line.split()
             for word in words:
                 insertTriedAndHeap(word, root, minHeap)
+
+'''
+
+
+class Solution(object):
+    def mergeTwoList(self, list1, list2):
+        dummyNode = tail = LinkNode()
+
+        while list1 and list2:
+            if list1.val < list2.val:
+                tail.next = list1
+                list1 = list1.next
+            else:
+                tail.next = list2
+                list2 = list2.next
+
+            tail = tail.next
+
+        if list1:
+            tail.next = list1
+        else:
+            tail.next = list2
+
+        return dummyNode
+
